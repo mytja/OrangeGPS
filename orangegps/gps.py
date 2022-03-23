@@ -36,12 +36,11 @@ class GPS:
                 longitude = self._convert_to_degree(parts[4])
                 if parts[5] == 'W':
                     longitude = -longitude
-                satellites = parts[7]
-                gps_time = parts[1][0:2] + ":" + parts[1][2:4] + ":" + parts[1]
+                self.has_fix = int(parts[6]) == 1
+                self.satellites = parts[7]
                 self.latitude = latitude
                 self.longitude = longitude
-                self.satellites = satellites
-                self.gps_time = gps_time
+                self.gps_time = parts[1][0:2] + ":" + parts[1][2:4] + ":" + parts[1]
                 return True
             time.sleep(0.5)
 
