@@ -25,6 +25,8 @@ class GPS:
             parts = buffer.split(',')
             gps_satellite = parts[0][1:3]
             id_number = parts[0][3:]
+            if self.debug:
+                print(f"[DEBUG] GPS fix status: {parts[6]} {parts[7]}")
             #print(gps_sattelite, parts[0][3:])
             if gps_satellite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
                 return False
