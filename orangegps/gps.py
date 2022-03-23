@@ -25,12 +25,12 @@ class GPS:
             parts = buffer.split(',')
             gps_satellite = parts[0][1:3]
             id_number = parts[0][3:]
-            if self.debug:
+            if self.debug and len(parts) > 8:
                 print(f"[DEBUG] GPS fix status: {parts[6]} {parts[7]}")
             #print(gps_sattelite, parts[0][3:])
             if gps_satellite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
                 return False
-            if id_number and parts[6] == "1":
+            if id_number and len(parts) > 8 and parts[6] == "1":
                 #print(parts)
                 latitude = self._convert_to_degree(parts[2])
                 if parts[3] == 'S':
