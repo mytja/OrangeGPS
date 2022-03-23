@@ -36,7 +36,7 @@ class GPS:
                 longitude = self._convert_to_degree(parts[4])
                 if parts[5] == 'W':
                     longitude = -longitude
-                self.has_fix = int(parts[6]) == 1
+                self.has_fix = int(parts[6])
                 self.satellites = parts[7]
                 self.latitude = latitude
                 self.longitude = longitude
