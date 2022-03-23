@@ -13,7 +13,7 @@ class GPS:
 
     def configure(self):
         self.gps_serial.write(b"PMTK220,1000")
-        self.gps_serial.write(b'PMTK314,0,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0')
+        self.gps_serial.write(b'PMTK314,1,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0')
 
     def refresh(self) -> bool:
         while True:
@@ -30,7 +30,7 @@ class GPS:
             #print(gps_sattelite, parts[0][3:])
             if gps_satellite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
                 return False
-            if id_number and len(parts) > 8 and parts[6] == "1":
+            if id_number and len(parts) > 8 and int(parts[6]) >= 1:
                 #print(parts)
                 latitude = self._convert_to_degree(parts[2])
                 if parts[3] == 'S':
