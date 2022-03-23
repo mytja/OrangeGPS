@@ -28,7 +28,7 @@ class GPS:
             #print(gps_sattelite, parts[0][3:])
             if gps_satellite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
                 return False
-            if id_number:
+            if id_number and parts[6] == "1":
                 #print(parts)
                 latitude = self._convert_to_degree(parts[2])
                 if parts[3] == 'S':
