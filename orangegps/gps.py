@@ -2,10 +2,20 @@ import time
 
 
 class GPS:
-    def __init__(self, serial_connection):
+    def __init__(self, serial_connection, debug: bool = False):
         self.gps_serial = serial_connection
+        self.debug = debug
+        self.has_fix = False
+        self.latitude = None
+        self.longitude = None
+        self.satellites = 0
+        self.gps_time = ""
 
-    def get(self) -> (float, float, str, str):
+    def configure(self):
+        self.gps_serial.write(b"PMTK220,1000")
+        self.gps_serial.write(b'PMTK314,0,0,5,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0')
+
+    def refresh(self) -> bool:
         while True:
             line = self.gps_serial.readline()
             buffer: str = line.decode()
@@ -13,11 +23,11 @@ class GPS:
             buffer = buffer.replace("\\n", "")
             buffer = buffer.replace("\\", "")
             parts = buffer.split(',')
-            gps_sattelite = parts[0][1:3]
+            gps_satellite = parts[0][1:3]
             id_number = parts[0][3:]
             #print(gps_sattelite, parts[0][3:])
-            if gps_sattelite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
-                return None, None, None, None
+            if gps_satellite not in ("GA", "GB", "GI", "GL", "GP", "GQ", "GN"):
+                return False
             if id_number:
                 #print(parts)
                 latitude = self._convert_to_degree(parts[2])
@@ -28,8 +38,12 @@ class GPS:
                     longitude = -longitude
                 satellites = parts[7]
                 gps_time = parts[1][0:2] + ":" + parts[1][2:4] + ":" + parts[1]
-                return latitude, longitude, satellites, gps_time
-            time.sleep(1)
+                self.latitude = latitude
+                self.longitude = longitude
+                self.satellites = satellites
+                self.gps_time = gps_time
+                return True
+            time.sleep(0.5)
 
     def _convert_to_degree(self, raw_degrees):
         raw_as_float = float(raw_degrees)
